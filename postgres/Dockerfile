@@ -1,19 +1,13 @@
-# Use the official Alpine Linux image as the base
-FROM alpine:latest
+FROM postgres:10.0-alpine
 
-# Add a user named "test"
-RUN adduser -D test
+USER postgres
 
-# Install PostgreSQL
-RUN apk add --no-cache postgresql postgresql-contrib
-
-# Switch to the "test" user
-USER test
-
-# Initialize the database
-CMD /etc/init.d/postgresql setup && /etc/init.d/postgresql start
-
-# Start the PostgreSQL service
-ENTRYPOINT ["postgres", "-D", "/var/lib/postgresql/data"]
-
+RUN chmod 0700 /var/lib/postgresql/data &&\
+    initdb /var/lib/postgresql/data &&\
+    echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/data/pg_hba.conf &&\
+    echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf &&\
+    pg_ctl start &&\
+    psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'main'" | grep -q 1 || psql -U postgres -c "CREATE DATABASE main" &&\
+    psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD 'mysecurepassword';"
+    
 EXPOSE 5432

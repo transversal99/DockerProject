@@ -1,29 +1,30 @@
-# Use Alpine Linux as the base image
+# Use the latest Alpine Linux base image
 FROM alpine:latest
 
-# Install PostgreSQL and its client
-RUN apk add --no-cache postgresql postgresql-client
+# Update package repository index and install PostgreSQL
+RUN apk update && \
+    apk add --no-cache postgresql postgresql-client
 
 # Create necessary directories
 RUN mkdir -p /run/postgresql /var/lib/postgresql/data
 
-# Change ownership of directories
+# Change ownership of directories to the postgres user
 RUN chown -R postgres:postgres /run/postgresql /var/lib/postgresql
 
+COPY init.sql /docker-entrypoint-initdb.d/
 # Switch to postgres user and initialize the database
 USER postgres
 RUN initdb -D /var/lib/postgresql/data
 
-# Update PostgreSQL configuration
-RUN echo "host all all 0.0.0.0/0 md5" >> /var/lib/postgresql/data/pg_hba.conf
-RUN echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
-RUN echo "unix_socket_directories = '/run/postgresql'" >> /var/lib/postgresql/data/postgresql.conf
+# Adjust permissions of the data directory
+RUN chmod 0700 /var/lib/postgresql/data
 
 # Set the working directory
 WORKDIR /usr/src/app
 
 # Start PostgreSQL Database Server with the correct configuration file
-CMD ["postgres", "-D", "/var/lib/postgresql/data"]
+ENTRYPOINT ["pg_ctl", "-D", "/var/lib/postgresql/data", "start"]
 
 # Expose the PostgreSQL port
 EXPOSE 5432
+

@@ -2,9 +2,8 @@ version: '3.7'
 
 services:
   php:
-    build: 
-      context: .
-      dockerfile: Dockerfile.php
+    build: ./postgres
+    
     volumes:
       - ./symfonyProject:/symfonyProject
     networks:

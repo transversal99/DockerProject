@@ -10,7 +10,7 @@ services:
       - app-network
 
   adminer:
-    image: adminer
+    build: ./adminer
     restart: always
     ports:
       - 8080:8080

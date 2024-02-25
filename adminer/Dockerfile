@@ -18,4 +18,4 @@ ADD https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php 
 EXPOSE 8080
 
 # Command to run Adminer when the container starts
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "/var/www"]
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/"]

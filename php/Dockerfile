@@ -33,5 +33,5 @@ RUN composer create-project symfony/skeleton:"7.0.*" my_project_directory
 
 
 
-WORKDIR /volume/mon_projet
+WORKDIR /volume/symfonyProject
 CMD ["cp", "-R", "/symfonyProject/", "/volume","php-fpm"]

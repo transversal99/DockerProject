@@ -1,25 +1,23 @@
-version: "3.8"
+version: '3.7'
 
 services:
-  db:
-    build: ./postgres
-    container_name: db
-    env_file:
-      - .env.local
-    environment:
-      POSTGRES_user: postgres
-      POSTGRES_PASSWORD: postgres
-
-    ports:
-      - "5432:5432"
+  php:
+    build: 
+      context: .
+      dockerfile: Dockerfile.php
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./symfonyProject:/symfonyProject
+    networks:
+      - app-network
+
   adminer:
-    build: ./adminer
-    container_name: adminer
+    image: adminer
+    restart: always
     ports:
       - 8080:8080
-    depends_on:
-      - db
-volumes:
-  postgres_data:
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

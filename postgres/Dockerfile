@@ -12,7 +12,7 @@ RUN chown -R postgres:postgres /run/postgresql /var/lib/postgresql/data
 # Change ownership of directories to the postgres user
 RUN chown -R postgres:postgres /run/postgresql /var/lib/postgresql
 
-COPY init.sql /docker-entrypoint-initdb.d
+COPY init.sql /tmp/bdd.sql
 # Switch to postgres user and initialize the database
 USER postgres
 
@@ -24,7 +24,7 @@ RUN echo "host all all 0.0.0.0/0 md5" >> /var/lib/postgresql/data/pg_hba.conf &&
 
 RUN pg_ctl -D /var/lib/postgresql/data -o "-c listen_addresses='*'" -w start && \
     psql --command "ALTER USER postgres WITH PASSWORD 'postgres';" && \
-    psql -U postgres -f /docker-entrypoint-initdb.d && \
+    psql -U postgres -f /tmp/bdd.sql && \
     pg_ctl -D /var/lib/postgresql/data -w stop
 
 CMD ["postgres", "-D", "/var/lib/postgresql/data"]

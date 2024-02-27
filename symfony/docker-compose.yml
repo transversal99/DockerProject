@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./composer
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ./symfonypROEJTC:/volume/symfonyProject
+    depends_on:
+      - db
+#test purpose 
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: symfony_db
+      MYSQL_USER: symfony_user
+      MYSQL_PASSWORD: symfony_password

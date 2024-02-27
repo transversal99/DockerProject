@@ -1,6 +1,4 @@
-
 FROM alpine
-
 
 RUN apk update && apk upgrade
 
@@ -21,17 +19,19 @@ RUN apk add php &&\
     apk --no-cache add libxml2-dev &&\
     apk add php-dom
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
-RUN composer create-project symfony/skeleton: symfonyProject
-WORKDIR /symfonyProject
+# Install dependencies
+RUN apk --no-cache add curl git openssh-client
 
-RUN composer install
-RUN composer require symfony/orm-pack
-RUN composer require twig
-RUN composer require symfony/maker-bundle
-RUN composer create-project symfony/skeleton:"7.0.*" my_project_directory
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Create and configure Symfony project
+RUN composer create-project symfony/skeleton symfonyProject && \
+    cd symfonyProject && \
+    composer require symfony/orm-pack twig symfony/maker-bundle
 
 
 
 WORKDIR /volume/symfonyProject
+
 CMD ["cp", "-R", "/symfonyProject/", "/volume","php-fpm"]

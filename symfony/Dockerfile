@@ -1,7 +1,13 @@
+# Use Alpine Linux as the base image for a lightweight container
 FROM alpine
 
-RUN apk update && apk upgrade
+# Expose port 8000 (if needed)
+EXPOSE 8000
 
+# Specify the entry point to start the Symfony server
+# Use Alpine Linux as the base image for a lightweight container
+FROM alpine
+RUN  apk update && apk upgrade
 RUN apk add php &&\
     apk add php-fpm &&\
     apk add curl &&\
@@ -19,19 +25,15 @@ RUN apk add php &&\
     apk --no-cache add libxml2-dev &&\
     apk add php-dom
 
-# Install dependencies
-RUN apk --no-cache add curl git openssh-client
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
 
-# Install Composer
-RUN curl -sS https://get.symfony.com/cli/installer | bash
+WORKDIR /symfonyProject/
 
-RUN symfony -v
-
-RUN apk add symfony-cli # buildkit
-
-
-WORKDIR /symfonyProject
-
+# Expose port 8000 (if needed)
 EXPOSE 8000
 
-ENTRYPOINT ["/bin/sh" "-c" "symfony server:start"]
+# Specify the entry point to start the Symfony server
+ENTRYPOINT ["symfony", "server:start"]

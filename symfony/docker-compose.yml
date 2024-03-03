@@ -1,24 +1,35 @@
+# version: '3.8'
+
+# services:
+#   symfony:
+#     build: ./symfony
+#     volumes:
+#       - ./symfonyDockerCompose:/symfonyProject
+#     ports:
+#       - "8000:8000"
+#     # depends_on:
+#     #   - postgres
+#     # networks:
+#     #   - backend
+
+#   composer:
+#     build: ./composer
+#     volumes:
+#       - ./symfony/:/volume/symfonyProject
+# #     networks:
+# #       - backend
+
+# # networks:
+# #   backend:
+# #     external: true
 version: '3.8'
 
 services:
-  symfony:
+  symfony_app:
     build: ./symfony
-    volumes:
-      - ./symfonyDockerCompose:/symfonyProject
     ports:
       - "8000:8000"
-    depends_on:
-      - postgres
-    networks:
-      - backend
-
-  composer:
-    image: ./composer
     volumes:
-      - ./symfony/:/volume/symfonyProject
-    networks:
-      - backend
-
-networks:
-  backend:
-    external: true
+      - .:/symfonyProject
+    environment:
+      - APP_ENV=dev

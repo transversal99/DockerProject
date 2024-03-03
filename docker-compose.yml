@@ -3,11 +3,14 @@ version: '3.7'
 services:
   postgres:
     build: ./postgres
-    
+    ports: 
+      - 5432:5432 
     volumes:
-      - ./symfonyProject:/symfonyProject
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: toto
     networks:
-      - app-network
+      - backend
 
   adminer:
     build: ./adminer
@@ -15,10 +18,13 @@ services:
     ports:
       - 8080:8080
     networks:
-      - app-network
+      - backend
     depends_on:
       - postgres
     
+
 networks:
-  app-network:
-    driver: bridge
+  backend:
+    external: true
+volumes:
+  pgdata:

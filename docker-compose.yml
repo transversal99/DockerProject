@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   postgres:
-    build: ./postgres
+    image: jabsraighs/arthur_postgres_alpine
     ports:
       - 5432:5432
     volumes:
@@ -13,7 +13,7 @@ services:
       - backend
 
   adminer:
-    build: ./adminer
+    image: jabsraighs/jay_adminer_alpine
     restart: always
     ports:
       - 8080:8080

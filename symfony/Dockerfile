@@ -1,27 +1,33 @@
 # Use Alpine Linux as the base image for a lightweight container
 FROM alpine
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN apk update && apk upgrade
 
-RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions pdo_pgsql intl
+RUN apk add php &&\
+    apk add php-fpm &&\
+    apk add curl &&\
+    apk add php-phar &&\
+    apk add php-mbstring &&\
+    apk add php-openssl &&\
+    apk add php-ctype &&\
+    apk add php-json &&\
+    apk add php-iconv &&\
+    apk add php-session &&\
+    apk add php-pdo &&\
+    apk add php-tokenizer &&\
+    apk add php-simplexml &&\
+    apk --no-cache add php-xml &&\
+    apk --no-cache add libxml2-dev &&\
+    apk add php-dom
 
-RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
-    mv composer.phar /usr/local/bin/composer
+RUN apk add --no-cache bash \
+    && curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' | bash \
+    && apk add symfony-cli
 
-RUN apt update && apt install -yqq nodejs npm
+RUN apk add symfony-cli
 
-COPY . /var/www/
+WORKDIR /symfonyProject
 
-COPY ./docker/apache.conf /etc/apache2/sites-available/000-default.conf
+ENTRYPOINT [ "symfony server:start"]
 
-RUN cd /var/www && \
-    composer install && \
-    npm install --force && \
-    npm run build
-    
-WORKDIR /var/www/
-
-ENTRYPOINT ["bash", "./docker/docker.sh"]
-
-EXPOSE 80
+EXPOSE 8000

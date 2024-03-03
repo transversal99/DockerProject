@@ -1,35 +1,24 @@
-# version: '3.8'
-
-# services:
-#   symfony:
-#     build: ./symfony
-#     volumes:
-#       - ./symfonyDockerCompose:/symfonyProject
-#     ports:
-#       - "8000:8000"
-#     # depends_on:
-#     #   - postgres
-#     # networks:
-#     #   - backend
-
-#   composer:
-#     build: ./composer
-#     volumes:
-#       - ./symfony/:/volume/symfonyProject
-# #     networks:
-# #       - backend
-
-# # networks:
-# #   backend:
-# #     external: true
 version: '3.8'
 
 services:
-  symfony_app:
-    build: ./symfony
+  symfony:
+    image: jabsraighs/ulysse_symfony_alpine
+    volumes:
+      - ./symfonyDockerCompose:/symfonyProject
     ports:
       - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  composer:
+    image: jabsraighs/ulysse_composer_alpine
     volumes:
-      - .:/symfonyProject
-    environment:
-      - APP_ENV=dev
+      - ./symfony/:/volume/symfonyProject
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true

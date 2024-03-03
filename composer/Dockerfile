@@ -30,8 +30,6 @@ RUN composer create-project symfony/skeleton symfonyProject && \
     cd symfonyProject && \
     composer require symfony/orm-pack twig symfony/maker-bundle
 
-
-
 WORKDIR /volume/symfonyProject
 
 CMD ["cp", "-R", "/symfonyProject/", "/volume","php-fpm"]

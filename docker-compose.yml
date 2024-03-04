@@ -8,7 +8,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: toto #a modifier via .env pas de pswd en clair
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - backend
 

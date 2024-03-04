@@ -28,6 +28,6 @@ RUN apk add symfony-cli
 
 WORKDIR /symfonyProject
 
-ENTRYPOINT [ "symfony server:start"]
+CMD [ "symfony server:start"]
 
 EXPOSE 8000

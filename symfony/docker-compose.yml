@@ -2,13 +2,11 @@ version: '3.8'
 
 services:
   symfony:
-    image: jabsraighs/ulysse_symfony_alpine
+    build: .
     volumes:
       - ./symfonyDockerCompose:/symfonyProject
     ports:
       - "8000:8000"
-    depends_on:
-      - postgres
     networks:
       - backend
 
